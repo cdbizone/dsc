@@ -4,6 +4,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 import { Car } from "./car.model";
+import {JCollectionReference} from "nativescript-plugin-firebase/firebase.android";
 
 const editableProperties = [
     "doors",
@@ -52,11 +53,12 @@ export class CarService {
 
             const onValueEvent = (snapshot: any) => {
                 this._ngZone.run(() => {
-                    const results = this.handleSnapshot(snapshot.value);
+                    const results = this.handleSnapshot(snapshot);
                     observer.next(results);
                 });
             };
-            firebase.addValueEventListener(onValueEvent, `/${path}`);
+            firebase.firestore.collection('costumes').get().then(onValueEvent)
+            //firebase.addValueEventListener(onValueEvent, `/${path}`);
         }).pipe(catchError(this.handleErrors));
     }
 
@@ -74,16 +76,14 @@ export class CarService {
         });
     }
 
-    private handleSnapshot(data: any): Array<Car> {
+    private handleSnapshot(collectionReference: JCollectionReference): Array<Car> {
         this._cars = [];
-
-        if (data) {
-            for (const id in data) {
-                if (data.hasOwnProperty(id)) {
-                    this._cars.push(new Car(data[id]));
-                }
-            }
-        }
+        collectionReference.forEach(doc => {
+            const {id} = doc;
+            const data = doc.data();
+            this._cars.push(Object.assign({id}, data));
+        });
+        console.log(this._cars);
 
         return this._cars;
     }

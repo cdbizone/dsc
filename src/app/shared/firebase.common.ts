@@ -16,7 +16,7 @@ import { Config } from "./config";
 export function initFirebase() {
     firebase.init({
         persist: false,
-        storageBucket: Config.firebaseBucket
+        storageBucket: Config.storageBucket
     }).then((instance) => console.log("firebase.init done"),
         (error) => console.log("firebase.init error: " + error));
 }

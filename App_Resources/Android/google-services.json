@@ -1,39 +1,37 @@
 {
   "project_info": {
-    "project_number": "33002893899",
-    "firebase_url": "https://car-rental-b26b7.firebaseio.com",
-    "project_id": "car-rental-b26b7",
-    "storage_bucket": "car-rental-b26b7.appspot.com"
+    "project_number": "782598065339",
+    "firebase_url": "https://dance-studio-costumes.firebaseio.com",
+    "project_id": "dance-studio-costumes",
+    "storage_bucket": "dance-studio-costumes.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:33002893899:android:1aa8448c56b58a16",
+        "mobilesdk_app_id": "1:782598065339:android:e134b076ec47647c58ed9e",
         "android_client_info": {
           "package_name": "org.nativescript.dsc"
         }
       },
       "oauth_client": [
         {
-          "client_id": "33002893899-9vqs9kk47iuj43ofml42tosba2f3rk2u.apps.googleusercontent.com",
+          "client_id": "782598065339-hg7v0ae19n6hcmefgrch28jqipfnbkgm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCijF8lzSzSoCAAIjeiyR9IZBN6FEE8L4k"
+          "current_key": "AIzaSyDHHdmVYcXs5XgmU7oOxyGeg8reDenQ94o"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782598065339-hg7v0ae19n6hcmefgrch28jqipfnbkgm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

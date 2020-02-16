@@ -8,5 +8,6 @@
   "facebook_auth": false,
   "google_auth": false,
   "admob": false,
-  "invites": false
+  "invites": false,
+  "firestore": true
 }
