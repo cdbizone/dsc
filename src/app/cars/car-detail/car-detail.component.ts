@@ -1,11 +1,11 @@
-import {Component, OnInit, ViewContainerRef} from "@angular/core";
+import { Component, OnInit, ViewContainerRef } from "@angular/core";
 import { PageRoute, RouterExtensions } from "nativescript-angular/router";
 import { switchMap } from "rxjs/operators";
 
 import { Car } from "../shared/car.model";
 import { CarService } from "../shared/car.service";
-import {ModalDialogOptions, ModalDialogService} from "nativescript-angular/modal-dialog";
-import {EventsPickerComponent} from "~/app/cars/cars.module";
+import { ModalDialogOptions, ModalDialogService } from "nativescript-angular/modal-dialog";
+import { EventsPickerComponent } from "~/app/cars/shared/event-picker.component";
 
 /* ***********************************************************
 * This is the item details component in the master-detail structure.
@@ -18,10 +18,9 @@ import {EventsPickerComponent} from "~/app/cars/cars.module";
     providers: [ModalDialogService]
 })
 export class CarDetailComponent implements OnInit {
+    notAssignedEvents = [];
+    assignedEvents = [];
     private _car: Car;
-    public notAssignedEvents = [];
-    public assignedEvents = [];
-
 
     constructor(
         private _carService: CarService,
@@ -47,7 +46,7 @@ export class CarDetailComponent implements OnInit {
                 const carId = params.id;
 
                 this._car = this._carService.getCarById(carId);
-                this._carService.events.forEach(event => {
+                this._carService.events.forEach((event) => {
                     if (event.costumesIDs.indexOf(carId) === -1) {
                         this.notAssignedEvents.push(event);
                     } else {
@@ -79,28 +78,30 @@ export class CarDetailComponent implements OnInit {
                 message: "You have no event to add",
                 okButtonText: "Close"
             });
-            return;
 
+            return;
         }
         const opts: ModalDialogOptions = {
             context: { events: this.notAssignedEvents },
             fullscreen: false,
             viewContainerRef: this.viewContainerRef
         };
-        this._modalService.showModal(EventsPickerComponent, opts).then(event => {
+        this._modalService.showModal(EventsPickerComponent, opts).then((event) => {
             if (!event) {
                 return;
             }
-            this._carService.assignCostumeFromEvent(this._car.id, event.id).then(ref => {
+            this._carService.assignCostumeFromEvent(this._car.id, event.id).then((ref) => {
                 event.costumesIDs.push(this._car.id);
-                this.assignedEvents.push(...this.notAssignedEvents.splice(this.notAssignedEvents.findIndex(i=> i === event), 1));
-            });
+                this.assignedEvents.push(
+                    ...this.notAssignedEvents.splice(this.notAssignedEvents.findIndex((i) => i === event), 1)
+                );
+            }).catch((e) => console.log({e}));
 
         });
     }
 
     removeEvent(event) {
-        let options = {
+        const options = {
             title: "Deprive from Event",
             message: `Are you sure you want not to use "${this._car.name}" for "${event.name}" event?`,
             okButtonText: "Yes",
@@ -110,10 +111,12 @@ export class CarDetailComponent implements OnInit {
 
         (confirm as any)(options).then((result: boolean) => {
             if (result) {
-                this._carService.depriveCostumeToEvent(this._car.id, event.id).then(ref => {
+                this._carService.depriveCostumeToEvent(this._car.id, event.id).then((ref) => {
                     event.costumesIDs.splice(event.costumesIDs.indexOf(this._car.id), 1);
-                    this.notAssignedEvents.push(...this.assignedEvents.splice(this.assignedEvents.findIndex(i=> i === event), 1));
-                });
+                    this.notAssignedEvents.push(
+                        ...this.assignedEvents.splice(this.assignedEvents.findIndex((i) => i === event), 1)
+                    );
+                }).catch((e) => console.log({e}));
                 console.log(this.notAssignedEvents);
             }
         });
