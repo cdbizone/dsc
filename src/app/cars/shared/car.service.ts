@@ -4,7 +4,20 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 import { Car } from "./car.model";
-import {JCollectionReference} from "nativescript-plugin-firebase/firebase.android";
+import {JCollectionReference, JDocumentReference} from "nativescript-plugin-firebase/firebase.android";
+
+class Event {
+    name: string;
+    costumesIDs: string[];
+    id?: string;
+
+    constructor(config: JDocumentReference) {
+        const data = config.data();
+        this.id = config.id;
+        this.name = data.name;
+        this.costumesIDs = data.costumes.map(i => i.id);
+    }
+}
 
 const editableProperties = [
     "doors",
@@ -34,8 +47,14 @@ export class CarService {
     }
 
     private _cars: Array<Car> = [];
+    private _events: Array<Event> = [];
+
 
     constructor(private _ngZone: NgZone) { }
+
+    get events(): Array<Event> {
+        return this._events;
+    }
 
     getCarById(id: string): Car {
         if (!id) {
@@ -49,41 +68,32 @@ export class CarService {
 
     load(): Observable<any> {
         return new Observable((observer: any) => {
-            const path = "cars";
-
-            const onValueEvent = (snapshot: any) => {
+            const onValueEvent = (snapshot: [JCollectionReference, JCollectionReference]) => {
                 this._ngZone.run(() => {
-                    const results = this.handleSnapshot(snapshot);
+                    const results = this.handleSnapshot(...snapshot);
                     observer.next(results);
                 });
             };
-            firebase.firestore.collection('costumes').get().then(onValueEvent)
-            //firebase.addValueEventListener(onValueEvent, `/${path}`);
+            Promise.all([
+                firebase.firestore.collection('costumes').get(),
+                firebase.firestore.collection('events').get()
+            ]).then(onValueEvent);
+
         }).pipe(catchError(this.handleErrors));
+
     }
 
-    update(carModel: Car): Promise<any> {
-        const updateModel = CarService.cloneUpdateModel(carModel);
-
-        return firebase.update("/cars/" + carModel.id, updateModel);
-    }
-
-    uploadImage(remoteFullPath: string, localFullPath: string): Promise<any> {
-        return firebase.storage.uploadFile({
-            localFullPath,
-            remoteFullPath,
-            onProgress: null
-        });
-    }
-
-    private handleSnapshot(collectionReference: JCollectionReference): Array<Car> {
+    private handleSnapshot(costumeCollectionReference: JCollectionReference, eventCollectionReference: JCollectionReference): Array<Car> {
         this._cars = [];
-        collectionReference.forEach(doc => {
+        this._events = [];
+        costumeCollectionReference.forEach(doc => {
             const {id} = doc;
             const data = doc.data();
             this._cars.push(Object.assign({id}, data));
         });
-        console.log(this._cars);
+        eventCollectionReference.forEach(doc => {
+            this._events.push(new Event(doc));
+        });
 
         return this._cars;
     }
@@ -91,4 +101,30 @@ export class CarService {
     private handleErrors(error: Response): Observable<never> {
         return throwError(error);
     }
+
+    async assignCostumeFromEvent(costumeId: string, eventId: string) {
+        try {
+            const costumeRef = await firebase.firestore.collection('costumes').doc(costumeId).get();
+            const eventRef = await firebase.firestore.collection('events').doc(eventId);
+            return await eventRef.update({costumes: firebase.firestore.FieldValue.arrayUnion(costumeRef.ref)});
+        } catch (e) {
+            console.error(e);
+            throw new Error('Some error has occurred on add costume to event');
+        }
+    }
+
+    async depriveCostumeToEvent(costumeId: string, eventId: string) {
+        try {
+            const costumeRef = await firebase.firestore.collection('costumes').doc(costumeId).get();
+            const eventRef = await firebase.firestore.collection('events').doc(eventId);
+
+            return await eventRef.update({costumes: firebase.firestore.FieldValue.arrayRemove(costumeRef.ref)});
+
+        } catch (e) {
+            console.error(e);
+            throw new Error('Some error has occurred on removing costume from event');
+        }
+    }
+
+
 }

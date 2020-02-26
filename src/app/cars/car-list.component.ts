@@ -76,6 +76,7 @@ export class CarListComponent implements OnInit, OnDestroy {
     }
 
     private createFilterFromData(cars: Car[]) {
+        console.log(cars);
         this.filterDef = {
             types: [
                 {name: 'top', val: false},

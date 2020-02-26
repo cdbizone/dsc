@@ -3,18 +3,18 @@
     </NavigationButton>
     <Label [text]="car.name" horizontalAlignment="center"></Label>
     <ActionItem ios.position="right" android.position="right">
-        <Label text="Add to Event"></Label>
+        <Label text="Add to Event" (tap)="addToEvent()"></Label>
     </ActionItem>
 </ActionBar>
 
 <GridLayout>
     <ScrollView>
-        <GridLayout rows="auto, auto, auto">
-            <Image [src]="car.imageUrl" stretch="aspectFill" height="200" class="m-b-15"></Image>
+        <GridLayout rows="auto, auto, auto, auto">
+            <Image [src]="car.imageUrl" stretch="aspectFit" class="m-b-15"></Image>
 
             <StackLayout row="1" class="hr m-y-15"></StackLayout>
 
-            <GridLayout row="2" rows="*,*,*,*,*,*" columns="auto, auto">
+            <GridLayout row="2" rows="*,*,*,*,*" columns="auto, auto">
 
                 <Label text="Type" class="p-l-15 p-b-10 m-r-20" row="1"></Label>
                 <Label [text]="car.type" row="1" col="1" class="p-b-10"></Label>
@@ -24,7 +24,22 @@
 
                 <Label text="Description" class="p-l-15 p-b-10 m-r-20" row="3"></Label>
                 <Label [text]="car.description" row="3" col="1" class="p-b-10"></Label>
+
+                <Label text="Events:" class="p-l-15 p-b-10 m-r-20" row="4"></Label>
             </GridLayout>
+            <StackLayout row="3" class="p-l-30 p-b-10 m-r-20" rows="*,*,*">
+                <!--                <Label *ngFor="let event of events" [text]="event.name" fontWeight="bold"><Button text="Remove"></Button></Label>-->
+
+
+
+                <GridLayout columns="*,*" *ngFor="let event of assignedEvents">
+                    <Label col="0" [text]="event.name" fontWeight="bold"></Label>
+                    <Label col="1" row="auto" (tap)="removeEvent(event)" text="&#xf00d;" class="fas" color="red"></Label>
+                </GridLayout>
+                <Label *ngIf="!assignedEvents.length" textAlignment="center" text="{{'Сostume hasn\'t assigned to any event yet'}}"></Label>
+            </StackLayout>
+
         </GridLayout>
+
     </ScrollView>
 </GridLayout>
