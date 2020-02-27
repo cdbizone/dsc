@@ -9,7 +9,7 @@
 
 <GridLayout>
     <ScrollView>
-        <GridLayout rows="auto, auto, auto, auto">
+        <GridLayout rows="auto, auto, auto, auto, auto">
             <Image [src]="car.imageUrl" stretch="aspectFit" class="m-b-15"></Image>
 
             <StackLayout row="1" class="hr m-y-15"></StackLayout>
@@ -28,15 +28,14 @@
                 <Label text="Events:" class="p-l-15 p-b-10 m-r-20" row="4"></Label>
             </GridLayout>
             <StackLayout row="3" class="p-l-30 p-b-10 m-r-20" rows="*,*,*">
-                <!--                <Label *ngFor="let event of events" [text]="event.name" fontWeight="bold"><Button text="Remove"></Button></Label>-->
 
-
-
-                <GridLayout columns="*,*" *ngFor="let event of assignedEvents">
-                    <Label col="0" [text]="event.name" fontWeight="bold"></Label>
-                    <Label col="1" row="auto" (tap)="removeEvent(event)" text="&#xf00d;" class="fas" color="red"></Label>
-                </GridLayout>
-                <Label *ngIf="!assignedEvents.length" textAlignment="center" text="{{'Сostume hasn\'t assigned to any event yet'}}"></Label>
+<!--                <Label *ngFor="let event of events" [text]="event.name" fontWeight="bold"><Button text="Remove"></Button></Label>-->
+<!--                <GridLayout columns="*,*" *ngFor="let event of assignedEvents">-->
+<!--                    <Label col="0" [text]="event.name" fontWeight="bold"></Label>-->
+<!--                    <Label col="1" row="auto" (tap)="removeEvent(event)" text="&#xf00d;" class="fas" color="red"></Label>-->
+<!--                </GridLayout>-->
+<!--                <Label *ngIf="!assignedEvents.length" textAlignment="center" text="{{'Сostume hasn\'t assigned to any event yet'}}"></Label>-->
+                <Label textAlignment="center" text="{{assignedEvents.length ? assignedEvents[0].name :'Сostume hasn\'t assigned to any event yet'}}"></Label>
             </StackLayout>
 
         </GridLayout>

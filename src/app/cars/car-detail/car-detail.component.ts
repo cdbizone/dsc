@@ -2,7 +2,7 @@ import { Component, OnInit, ViewContainerRef } from "@angular/core";
 import { PageRoute, RouterExtensions } from "nativescript-angular/router";
 import { switchMap } from "rxjs/operators";
 
-import { Car } from "../shared/car.model";
+import { Costume } from "../shared/car.model";
 import { CarService } from "../shared/car.service";
 import { ModalDialogOptions, ModalDialogService } from "nativescript-angular/modal-dialog";
 import { EventsPickerComponent } from "~/app/cars/shared/event-picker.component";
@@ -20,7 +20,7 @@ import { EventsPickerComponent } from "~/app/cars/shared/event-picker.component"
 export class CarDetailComponent implements OnInit {
     notAssignedEvents = [];
     assignedEvents = [];
-    private _car: Car;
+    private _car: Costume;
 
     constructor(
         private _carService: CarService,
@@ -47,7 +47,7 @@ export class CarDetailComponent implements OnInit {
 
                 this._car = this._carService.getCarById(carId);
                 this._carService.events.forEach((event) => {
-                    if (event.costumesIDs.indexOf(carId) === -1) {
+                    if (event.costumeIDs.indexOf(carId) === -1) {
                         this.notAssignedEvents.push(event);
                     } else {
                         this.assignedEvents.push(event);
@@ -56,7 +56,7 @@ export class CarDetailComponent implements OnInit {
             });
     }
 
-    get car(): Car {
+    get car(): Costume {
         return this._car;
     }
 

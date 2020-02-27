@@ -3,7 +3,7 @@ import * as firebase from "nativescript-plugin-firebase";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
-import { Car } from "./car.model";
+import { Costume } from "./car.model";
 import { Event } from "./event.model";
 import { JCollectionReference } from "nativescript-plugin-firebase/firebase.android";
 
@@ -30,11 +30,11 @@ const editableProperties = [
     providedIn: "root"
 })
 export class CarService {
-    private static cloneUpdateModel(car: Car): object {
+    private static cloneUpdateModel(car: Costume): object {
         return editableProperties.reduce((a, e) => (a[e] = car[e], a), {}); // tslint:disable-line:ban-comma-operator
     }
 
-    private _cars: Array<Car> = [];
+    private _cars: Array<Costume> = [];
     private _events: Array<Event> = [];
 
     constructor(private _ngZone: NgZone) { }
@@ -43,7 +43,7 @@ export class CarService {
         return this._events;
     }
 
-    getCarById(id: string): Car {
+    getCarById(id: string): Costume {
         if (!id) {
             return;
         }
@@ -72,10 +72,10 @@ export class CarService {
 
     async assignCostumeFromEvent(costumeId: string, eventId: string) {
         try {
-            const costumeRef = await firebase.firestore.collection("costumes").doc(costumeId).get();
+
             const eventRef = await firebase.firestore.collection("events").doc(eventId);
 
-            return await eventRef.update({costumes: firebase.firestore.FieldValue.arrayUnion(costumeRef.ref)});
+            return await eventRef.update({costumes: firebase.firestore.FieldValue.arrayUnion(costumeId)});
         } catch (e) {
             console.error(e);
             throw new Error("Some error has occurred on add costume to event");
@@ -84,11 +84,9 @@ export class CarService {
 
     async depriveCostumeToEvent(costumeId: string, eventId: string) {
         try {
-            const costumeRef = await firebase.firestore.collection("costumes").doc(costumeId).get();
             const eventRef = await firebase.firestore.collection("events").doc(eventId);
 
-            return await eventRef.update({costumes: firebase.firestore.FieldValue.arrayRemove(costumeRef.ref)});
-
+            return await eventRef.update({costumes: firebase.firestore.FieldValue.arrayRemove(costumeId)});
         } catch (e) {
             console.error(e);
             throw new Error("Some error has occurred on removing costume from event");
@@ -98,7 +96,7 @@ export class CarService {
     private handleSnapshot(
         costumeCollectionReference: JCollectionReference,
         eventCollectionReference: JCollectionReference
-    ): Array<Car> {
+    ): Array<Costume> {
         this._cars = [];
         this._events = [];
         costumeCollectionReference.forEach((doc) => {

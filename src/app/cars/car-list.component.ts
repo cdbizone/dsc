@@ -5,7 +5,7 @@ import { BehaviorSubject, combineLatest, Subscription } from "rxjs";
 import { filter, finalize } from "rxjs/operators";
 import { ObservableArray } from "tns-core-modules/data/observable-array";
 
-import { Car } from "./shared/car.model";
+import { Costume } from "./shared/car.model";
 import { CarService } from "./shared/car.service";
 import { ModalDialogOptions, ModalDialogService } from "nativescript-angular/modal-dialog";
 import { ModalViewActionBarComponent } from "~/app/cars/shared/modal-view-action-bar.component";
@@ -18,7 +18,7 @@ import { ModalViewActionBarComponent } from "~/app/cars/shared/modal-view-action
 })
 export class CarListComponent implements OnInit, OnDestroy {
 
-    get cars(): ObservableArray<Car> {
+    get cars(): ObservableArray<Costume> {
         return this._cars;
     }
 
@@ -26,7 +26,7 @@ export class CarListComponent implements OnInit, OnDestroy {
         return this._isLoading;
     }
     private _isLoading: boolean = false;
-    private _cars: ObservableArray<Car> = new ObservableArray<Car>([]);
+    private _cars: ObservableArray<Costume> = new ObservableArray<Costume>([]);
     private _dataSubscription: Subscription;
     private _filterSubject: BehaviorSubject<any>  = new BehaviorSubject(null);
     private filterDef: any;
@@ -67,7 +67,7 @@ export class CarListComponent implements OnInit, OnDestroy {
                     }
 
                 })
-                .subscribe((cars: Array<Car>) => {
+                .subscribe((cars: Array<Costume>) => {
                     this._cars = new ObservableArray(cars);
                     this._isLoading = false;
                 });
@@ -106,7 +106,7 @@ export class CarListComponent implements OnInit, OnDestroy {
         });
     }
 
-    private createFilterFromData(cars: Array<Car>) {
+    private createFilterFromData(cars: Array<Costume>) {
         console.log(cars);
         this.filterDef = {
             types: [
