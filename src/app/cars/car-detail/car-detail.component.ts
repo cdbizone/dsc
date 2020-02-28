@@ -91,9 +91,9 @@ export class CarDetailComponent implements OnInit {
                 return;
             }
             this._carService.assignCostumeFromEvent(this._car.id, event.id).then((ref) => {
-                event.costumesIDs.push(this._car.id);
+                event.costumeIDs.push(this._car.id);
                 this.assignedEvents.push(
-                    ...this.notAssignedEvents.splice(this.notAssignedEvents.findIndex((i) => i === event), 1)
+                    ...this.notAssignedEvents.splice(this.notAssignedEvents.findIndex((i) => i === event.id), 1)
                 );
             }).catch((e) => console.log({e}));
 
@@ -112,9 +112,11 @@ export class CarDetailComponent implements OnInit {
         (confirm as any)(options).then((result: boolean) => {
             if (result) {
                 this._carService.depriveCostumeToEvent(this._car.id, event.id).then((ref) => {
-                    event.costumesIDs.splice(event.costumesIDs.indexOf(this._car.id), 1);
+                    
+                    event.costumeIDs.splice(event.costumeIDs.indexOf(this._car.id), 1);
+                    
                     this.notAssignedEvents.push(
-                        ...this.assignedEvents.splice(this.assignedEvents.findIndex((i) => i === event), 1)
+                        ...this.assignedEvents.splice(this.assignedEvents.findIndex((i) => i === event.id), 1)
                     );
                 }).catch((e) => console.log({e}));
                 console.log(this.notAssignedEvents);

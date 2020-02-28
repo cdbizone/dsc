@@ -75,7 +75,7 @@ export class CarService {
 
             const eventRef = await firebase.firestore.collection("events").doc(eventId);
 
-            return await eventRef.update({costumes: firebase.firestore.FieldValue.arrayUnion(costumeId)});
+            return await eventRef.update({costumeIDs: firebase.firestore.FieldValue.arrayUnion(costumeId)});
         } catch (e) {
             console.error(e);
             throw new Error("Some error has occurred on add costume to event");
@@ -83,12 +83,13 @@ export class CarService {
     }
 
     async depriveCostumeToEvent(costumeId: string, eventId: string) {
+
         try {
             const eventRef = await firebase.firestore.collection("events").doc(eventId);
 
-            return await eventRef.update({costumes: firebase.firestore.FieldValue.arrayRemove(costumeId)});
+            return await eventRef.update({costumeIDs: firebase.firestore.FieldValue.arrayRemove(costumeId)})
+
         } catch (e) {
-            console.error(e);
             throw new Error("Some error has occurred on removing costume from event");
         }
     }
