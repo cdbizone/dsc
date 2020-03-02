@@ -15,6 +15,7 @@ import { EventsPickerComponent } from "~/app/cars/shared/event-picker.component"
 @Component({
     selector: "CarDetail",
     templateUrl: "./car-detail.component.html",
+    styleUrls: ["./car-detail.component.scss"],
     providers: [ModalDialogService]
 })
 export class CarDetailComponent implements OnInit {
@@ -92,9 +93,20 @@ export class CarDetailComponent implements OnInit {
             }
             this._carService.assignCostumeFromEvent(this._car.id, event.id).then((ref) => {
                 event.costumeIDs.push(this._car.id);
+                const index = this.notAssignedEvents.findIndex((i) => i.id === event.id);
+
+                console.log( index );
+                console.log (this.assignedEvents );
+                console.log( this.notAssignedEvents );
+
                 this.assignedEvents.push(
-                    ...this.notAssignedEvents.splice(this.notAssignedEvents.findIndex((i) => i === event.id), 1)
+                    ...this.notAssignedEvents.splice( index, 1)
                 );
+
+                 console.log (this.assignedEvents );
+                 console.log( this.notAssignedEvents );
+
+
             }).catch((e) => console.log({e}));
 
         });
@@ -102,8 +114,8 @@ export class CarDetailComponent implements OnInit {
 
     removeEvent(event) {
         const options = {
-            title: "Deprive from Event",
-            message: `Are you sure you want not to use "${this._car.name}" for "${event.name}" event?`,
+            title: "Remove from Event",
+            message: `Are you sure you want to remove "${this._car.name}" from "${event.name}" event?`,
             okButtonText: "Yes",
             cancelButtonText: "No",
             neutralButtonText: "Cancel"

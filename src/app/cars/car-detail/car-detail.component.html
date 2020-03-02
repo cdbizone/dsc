@@ -30,7 +30,7 @@
             <StackLayout row="3" class="hr m-y-15" class="p-l-30 p-b-10 m-r-20" orientation="vertical">
                 <StackLayout orientation="horizontal" *ngFor="let event of assignedEvents">
                      <Label text="{{event.name}}"></Label>
-                     <Button text="Remove" dock="right" (tap)="removeEvent(event)"></Button>
+                     <Button color="red" class="car__btn--red" text="Remove" dock="right" (tap)="removeEvent(event)"></Button>
                 </StackLayout> 
                 <Label *ngIf="!assignedEvents.length" textAlignment="center" text="Сostume hasn't assigned to any event yet"></Label>
 
